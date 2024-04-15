@@ -1,4 +1,4 @@
-const { BrowserWindow } = require('electron');
+const { BrowserWindow, dialog } = require('electron');
 
 // Working with locale files.
 const path = require('path');
@@ -40,6 +40,11 @@ function createAppWindow() {
     // when you should delete the corresponding element.
     mainWindow = null;
   });
+
+  // mainWindow.once('ready-to-show', () => {
+  //   mainWindow.show();
+  //   // mainWindow.webContents.openDevTools();
+  // });
 }
 
 function isMainWindowDefined() {

@@ -20,17 +20,25 @@ export default function ListMatches(props) {
       return (desc ? -1 : 1) * (a[orderBy] - b[orderBy]);
     }
     if (typeof a[orderBy] === 'string') {
-      const [intA, intB] = [parseInt(a[orderBy], 10), parseInt(b[orderBy], 10)];
-      if (!Number.isNaN(intA) && !Number.isNaN(intB)) {
-        return (desc ? -1 : 1) * (intA - intB);
+      // Attempt to parse strings as numbers for comparison
+      const numA = parseFloat(a[orderBy]);
+      const numB = parseFloat(b[orderBy]);
+      // Check if both parsed values are numbers and not NaN
+      if (!Number.isNaN(numA) && !Number.isNaN(numB)) {
+        return (desc ? -1 : 1) * (numA - numB);
       }
-      const [strA, strB] = [a[orderBy].toUpperCase(), b[orderBy].toUpperCase()];
+      // Fallback to string comparison if not both are numbers
+      const strA = a[orderBy].toUpperCase();
+      const strB = b[orderBy].toUpperCase();
       if (strA < strB) {
         return desc ? 1 : -1;
       }
-      return desc ? -1 : 1;
+      if (strA > strB) {
+        return desc ? -1 : 1;
+      }
+      return 0;
     }
-    return 1;
+    return 0;
   };
   const filter = (a) => JSON.stringify(Object.values(a)).toUpperCase().indexOf(search.toUpperCase()) !== -1;
 

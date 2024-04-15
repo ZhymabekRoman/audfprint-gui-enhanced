@@ -28,6 +28,7 @@ export default function AppContent() {
   const [open, setOpen] = useState(false);
   const [precomputeList, setPrecomputeList] = useState([]);
   const [selectedAnalysis, selectAnalysis] = useState({});
+  const [selectedItem, setSelectedItem] = useState(null);
   const [matchData, setMatchData] = useState({ parsedMatchesByDatabase: [] });
   const { basename: selectedAnalysisName, fullname: selectedAnalysisFullname, mode } = selectedAnalysis || {};
   let title = 'New Analysis';
@@ -93,10 +94,12 @@ export default function AppContent() {
                   minHeight: 48,
                   justifyContent: open ? 'initial' : 'center',
                   px: 2.5,
+                  backgroundColor: selectedItem === fullname ? '#f0f0f0' : 'transparent',
                 }}
                 onClick={() => {
                   window.ipc.send('listMatches', { filename: fullname });
                   selectAnalysis({ basename, fullname });
+                  setSelectedItem(fullname);
                 }}
               >
                 <ListItemIcon

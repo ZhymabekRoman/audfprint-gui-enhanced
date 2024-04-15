@@ -113,6 +113,5 @@ build/
 # IDE tags
 tags
 public/audfprint/*
-!public/audfprint/audio_read.py
 precompute
 databases

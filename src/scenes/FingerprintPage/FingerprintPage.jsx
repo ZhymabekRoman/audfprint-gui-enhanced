@@ -25,8 +25,9 @@ import PythonOutput from './PythonOutput';
 
 export default function FingerprintPage() {
   const theme = mainTheme;
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(() => JSON.parse(localStorage.getItem('drawerOpen')) || false);
   const [databaseList, setDatabaseList] = useState([]);
+  const [selectedItem, setSelectedItem] = useState(null);
   const [selectedDatabase, selectDatabase] = useState({});
   const { fullname: selectedDbFullname, basename: selectedDbName } = selectedDatabase || {};
 
@@ -34,10 +35,14 @@ export default function FingerprintPage() {
     window.ipc.send('listDatabases');
     window.ipc.on('databasesListed', (event, data) => {
       const { files = [] } = data || {};
-      setDatabaseList(files);
+      setDatabaseList(files.sort((a, b) => a.basename.toLowerCase().localeCompare(b.basename.toLowerCase())));
     });
     return () => window.ipc.removeAllListeners('databasesListed');
   }, []);
+
+  useEffect(() => {
+    localStorage.setItem('drawerOpen', open);
+  }, [open]);
 
   // clear selected database when the database list is updated
   useEffect(() => {
@@ -82,10 +87,12 @@ export default function FingerprintPage() {
                   minHeight: 48,
                   justifyContent: open ? 'initial' : 'center',
                   px: 2.5,
+                  backgroundColor: selectedItem === fullname ? '#f0f0f0' : 'transparent', // Modify this line
                 }}
                 onClick={() => {
                   window.ipc.send('listDatabase', { filename: fullname });
                   selectDatabase({ basename, fullname });
+                  setSelectedItem(fullname);
                 }}
               >
                 <ListItemIcon
